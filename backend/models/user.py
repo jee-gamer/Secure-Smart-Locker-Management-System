@@ -17,3 +17,26 @@ def create_table():
 
     conn.commit()
     conn.close()
+
+def db_create_user(username, password, role='user'):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
+        (username, password, role)
+    )
+    conn.commit()
+    conn.close()
+
+def db_get_user_by_username(username):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT * FROM users WHERE username = ?", (username,)
+    )
+
+    user = cursor.fetchone() # will return None if none is found
+    conn.close()
+    return user

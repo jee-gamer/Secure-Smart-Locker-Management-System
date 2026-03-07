@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-DB_PATH = os.path.join(os.path.dirname(__file__), '../database/locker.db')
+DB_PATH = os.path.join(os.path.dirname(__file__), '../locker.db')
 
 def get_connection():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
