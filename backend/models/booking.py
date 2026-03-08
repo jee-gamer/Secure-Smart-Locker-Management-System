@@ -29,25 +29,35 @@ def book(user_id, receiver_id, locker_id, item):
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute(
-        "INSERT INTO bookings (user_id, receiver_id, locker_id) VALUES (?, ?, ?)",
-        (user_id, receiver_id, locker_id)
-    )
-
-    conn.commit()
-    conn.close()
+    try:
+        cursor.execute(
+            "INSERT INTO bookings (user_id, receiver_id, locker_id) VALUES (?, ?, ?)",
+            (user_id, receiver_id, locker_id)
+        )
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Booking failed: {e}")
+        return False
+    finally:
+        conn.close()
 
 def unbook(user_id, locker_id):
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute(
-        "UPDATE bookings SET end_time = ? WHERE user_id = ? AND locker_id = ?",
-        (datetime.now(), user_id, locker_id)
-    )
-
-    conn.commit()
-    conn.close()
+    try:
+        cursor.execute(
+            "UPDATE bookings SET end_time = ? WHERE user_id = ? AND locker_id = ?",
+            (datetime.now(), user_id, locker_id)
+        )
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Booking failed: {e}")
+        return False
+    finally:
+        conn.close()
 
 def is_active(user_id, locker_id):
     conn = get_connection()
