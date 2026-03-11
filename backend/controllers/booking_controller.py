@@ -1,5 +1,5 @@
-from ..models.booking import *
-from ..models.locker import *
+from backend.models.booking import *
+from backend.models.locker import *
 
 
 def create_booking(user_id, receiver_id, locker_id):

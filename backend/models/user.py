@@ -39,4 +39,4 @@ def db_get_user_by_username(username):
 
     user = cursor.fetchone() # will return None if none is found
     conn.close()
-    return user
+    return [dict(u) for u in users]

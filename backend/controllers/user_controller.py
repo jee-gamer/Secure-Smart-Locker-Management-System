@@ -1,4 +1,4 @@
-from ..models.user import *
+from backend.models.user import *
 from werkzeug.security import generate_password_hash, check_password_hash
 
 def create_user(username, password, role='user'):
@@ -8,7 +8,7 @@ def create_user(username, password, role='user'):
         return {"error": "This username is already registered"}
     hashed = generate_password_hash(password)
 
-    db_create_user(username, password, role)
+    db_create_user(username, hashed, role)
     return {"message": "User created successfully"}
 
 def login(username, password):
