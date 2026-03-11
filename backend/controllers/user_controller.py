@@ -16,7 +16,17 @@ def login(username, password):
     if not user:
         return {"error": "User does not exist"}
 
-    if not check_password_hash(user.password, password):
+    if not check_password_hash(user["password"], password):
         return {"error": "Incorrect password"}
 
-    return {"message": "Logged in successfully"}
+    return {
+        "message": "Logged in successfully",
+        "user": {
+            "id": user["id"],
+            "username": user["username"],
+            "role": user["role"]
+        }
+    }
+
+def get_all_users():
+    return db_get_all_users()

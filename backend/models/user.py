@@ -39,4 +39,14 @@ def db_get_user_by_username(username):
 
     user = cursor.fetchone() # will return None if none is found
     conn.close()
-    return [dict(u) for u in users]
+    return dict(user) if user else None
+
+def db_get_all_users():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT id, username, role FROM users")
+    rows = cursor.fetchall()
+
+    conn.close()
+    return [dict(r) for r in rows]

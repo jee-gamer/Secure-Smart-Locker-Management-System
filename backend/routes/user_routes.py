@@ -1,8 +1,12 @@
 from flask import Blueprint, request, jsonify
-from backend.controllers.user_controller import create_user, login
+from backend.controllers.user_controller import create_user, login, get_all_users
 
 # THE PREFIXES ARE RIGHT HERE
 user_bp = Blueprint('users', __name__, url_prefix='/users')
+
+@user_bp.route('/', methods=['GET'])
+def list_users():
+    return jsonify(get_all_users()), 200
 
 @user_bp.route('/register', methods=['POST'])
 def register():

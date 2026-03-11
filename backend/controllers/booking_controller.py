@@ -1,5 +1,5 @@
 from backend.models.booking import *
-from backend.models.locker import *
+from backend.models.locker import is_occupied, set_status
 
 
 def create_booking(user_id, receiver_id, locker_id):
@@ -32,3 +32,6 @@ def create_unbook(user_id, locker_id):
     set_status(locker_id, "available")
 
     return {"message": f"Successfully unbooked locker: {locker_id}"}
+
+
+

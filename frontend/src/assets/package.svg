@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Box body -->
+  <rect x="10" y="45" width="80" height="45" rx="4" fill="#4a5568"/>
+  <!-- Box lid -->
+  <rect x="7" y="36" width="86" height="14" rx="4" fill="#6366f1"/>
+  <!-- Ribbon vertical -->
+  <rect x="45" y="36" width="10" height="54" rx="2" fill="#818cf8"/>
+  <!-- Ribbon horizontal on lid -->
+  <rect x="7" y="40" width="86" height="6" rx="2" fill="#818cf8"/>
+  <!-- Bow left loop -->
+  <ellipse cx="38" cy="33" rx="12" ry="7" fill="#6366f1" transform="rotate(-20 38 33)"/>
+  <!-- Bow right loop -->
+  <ellipse cx="62" cy="33" rx="12" ry="7" fill="#6366f1" transform="rotate(20 62 33)"/>
+  <!-- Bow center -->
+  <circle cx="50" cy="35" r="5" fill="#818cf8"/>
+  <!-- Shine on lid -->
+  <rect x="15" y="38" width="20" height="3" rx="1.5" fill="rgba(255,255,255,0.15)"/>
+</svg>
