@@ -26,6 +26,7 @@
           :key="locker.id"
           :locker="locker"
           :current-user="auth.user"
+          :booking="bookingForLocker(locker.id)"
           @book="openBookModal"
           @open="openViewModal"
           @unbook="handleUnbook"
@@ -52,6 +53,7 @@ import OpenModal from '../components/OpenModal.vue'
 const router = useRouter()
 const lockers = ref([])
 const users = ref([])
+const bookings = ref([])
 const loadingLockers = ref(true)
 const bookTarget = ref(null)
 const viewTarget = ref(null)
@@ -63,15 +65,21 @@ const otherUsers = computed(() =>
 async function fetchLockers() {
   loadingLockers.value = true
   try {
-    const [lockersRes, usersRes] = await Promise.all([
+    const [lockersRes, usersRes, bookingsRes] = await Promise.all([
       lockerAPI.getAll(),
       authAPI.getUsers(),
+      bookingAPI.getActive()
     ])
     lockers.value = lockersRes.data
     users.value = usersRes.data
+    bookings.value = bookingsRes.data
   } finally {
     loadingLockers.value = false
   }
+}
+
+function bookingForLocker(locker_id) {
+  return bookings.value.find(b => b.locker_id === locker_id)
 }
 
 function openBookModal(locker) {

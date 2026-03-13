@@ -7,8 +7,7 @@ def create_table():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS lockers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            status TEXT NOT NULL CHECK(status IN ('available', 'occupied')),
-            location TEXT
+            status TEXT NOT NULL CHECK(status IN ('available', 'occupied'))
         )
     """)
 

@@ -13,13 +13,18 @@ import { computed } from 'vue'
 const props = defineProps({
   locker: { type: Object, required: true },
   currentUser: { type: Object, required: true },
+  booking: { type: Object }
 })
 
 const emit = defineEmits(['book', 'open', 'unbook'])
 
 const isAvailable = computed(() => props.locker.status === 'available')
-const iAmSender = computed(() => props.locker.sender_id === props.currentUser.id)
-const iAmReceiver = computed(() => props.locker.receiver_id === props.currentUser.id)
+const iAmSender = computed(() => {
+  return props.booking && props.booking.user_id === props.currentUser.id
+})
+const iAmReceiver = computed(() => {
+  return props.booking && props.booking.receiver_id === props.currentUser.id
+})
 
 const icon = computed(() => {
   if (isAvailable.value) return '🔓'

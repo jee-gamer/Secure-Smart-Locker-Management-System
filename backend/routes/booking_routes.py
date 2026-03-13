@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from backend.controllers.booking_controller import create_booking, create_unbook
+from backend.models.booking import get_all_active_bookings
 
 booking_bp = Blueprint('bookings', __name__, url_prefix='/bookings')
 
@@ -36,3 +37,11 @@ def unbook():
         return jsonify(result), 400
 
     return jsonify(result), 200
+
+
+@booking_bp.route('/get-active', methods=['GET'])
+def get_active():
+
+    active_bookings = get_all_active_bookings()
+
+    return jsonify(active_bookings), 200

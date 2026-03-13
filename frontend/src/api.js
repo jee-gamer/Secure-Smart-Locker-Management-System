@@ -22,4 +22,5 @@ export const bookingAPI = {
     api.post('/bookings/', { user_id, receiver_id, locker_id }),
   unbook: (user_id, locker_id) =>
     api.delete('/bookings/', { data: { user_id, locker_id } }),
+  getActive: () => api.get('/bookings/get-active')
 }

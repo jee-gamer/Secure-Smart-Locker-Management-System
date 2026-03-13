@@ -4,15 +4,24 @@
       <h3 class="text-xl font-bold text-gray-800 mb-1">📦 Deposit Item</h3>
       <p class="text-sm text-gray-500 mb-6">Locker <strong class="font-semibold text-gray-700">#{{ locker.id }}</strong></p>
 
-      <div class="mb-4">
+      <div class="mb-4 relative">
         <label class="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Send to (Receiver)</label>
-        <select v-model="selectedReceiver"
-                class="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-          <option disabled value="">— Select a user —</option>
-          <option v-for="u in users" :key="u.id" :value="u.id">
+        <input type="text"
+               v-model="searchQuery"
+               @focus="showSuggestions = true"
+               @blur="hideSuggestions"
+               placeholder="Search for a user..."
+               class="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+        <ul v-if="showSuggestions && filteredUsers.length" class="absolute z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 max-h-40 overflow-y-auto">
+          <li v-for="u in filteredUsers" :key="u.id" @click="selectUser(u)" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
             {{ u.username }}
-          </option>
-        </select>
+          </li>
+        </ul>
+        <ul v-if="!filteredUsers.length && searchQuery" class="absolute z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 max-h-40 overflow-y-auto">
+          <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+            User doesn't exist.
+          </li>
+        </ul>
       </div>
 
       <p v-if="error" class="text-red-500 text-xs text-center mb-4">{{ error }}</p>
@@ -28,7 +37,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const props = defineProps({
   locker: { type: Object, required: true },
@@ -36,8 +45,32 @@ const props = defineProps({
 })
 const emit = defineEmits(['confirm', 'cancel'])
 
-const selectedReceiver = ref('')
+const searchQuery = ref('')
+const selectedReceiver = ref(null)
+const showSuggestions = ref(false)
 const error = ref('')
+
+const filteredUsers = computed(() => {
+  if (!searchQuery.value) {
+    return props.users
+  }
+  return props.users.filter(user =>
+    user.username.toLowerCase().includes(searchQuery.value.toLowerCase())
+  )
+})
+
+function selectUser(user) {
+  selectedReceiver.value = user
+  searchQuery.value = user.username
+  showSuggestions.value = false
+}
+
+function hideSuggestions() {
+  // Delay hiding to allow click event to register
+  setTimeout(() => {
+    showSuggestions.value = false
+  }, 200)
+}
 
 function confirm() {
   if (!selectedReceiver.value) {
@@ -46,7 +79,7 @@ function confirm() {
   }
   emit('confirm', {
     lockerId: props.locker.id,
-    receiverId: selectedReceiver.value,
+    receiverId: selectedReceiver.value.id,
   })
 }
 </script>

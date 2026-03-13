@@ -63,12 +63,34 @@ def is_active(user_id, locker_id):
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute(
-        "SELECT * FROM bookings WHERE user_id = ? AND locker_id = ? AND end_time IS NULL",
-        (user_id, locker_id)
-    )
+    try:
+        cursor.execute(
+            "SELECT * FROM bookings WHERE user_id = ? AND locker_id = ? AND end_time IS NULL",
+            (user_id, locker_id)
+        )
 
-    if cursor.fetchone():
-        return True
+        if cursor.fetchone():
+            return True
+    except Exception as e:
+        print(f"Checking for active booking failed: {e}")
+        return False
+    finally:
+        conn.close()
 
     return False
+
+def get_all_active_bookings():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            "SELECT * FROM bookings WHERE end_time IS NULL"
+        )
+        rows = cursor.fetchall()
+        return [dict(r) for r in rows]
+    except Exception as e:
+        print(f"Getting active bookings failed: {e}")
+        return False
+    finally:
+        conn.close()
