@@ -1,4 +1,4 @@
-Secure smart locker management system
+from gettext import installSecure smart locker management system
 
 The secure smart locker management system is a web-based application that simulates how a real smart locker system would work in an apartment or condominium.
 
@@ -42,4 +42,28 @@ Backend: Python, Flask, SQLite
 
 Frontend: Vue.js
 
+# HOW TO RUN
 
+1. cd backend
+2. activate virtual environment
+```
+.venv/Scripts/activate
+```
+3. Install dependencies
+```
+pip install -r requirements.txt
+```
+
+4. Run the app
+```
+cd ..
+python -m backend.app
+```
+
+5. cd ..
+6. cd frontend
+7. Install and run the frontend
+```
+npm install
+npm run dev
+```
