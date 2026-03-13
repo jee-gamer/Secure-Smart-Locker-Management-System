@@ -29,7 +29,7 @@
           :booking="bookingForLocker(locker.id)"
           @book="openBookModal"
           @open="openViewModal"
-          @unbook="handleUnbook"
+          @unbook="openUnbookModal"
         />
       </div>
     </main>
@@ -37,11 +37,11 @@
     <!-- Modals -->
     <BookModal v-if="bookTarget" :locker="bookTarget" :users="otherUsers" @confirm="handleBook" @cancel="bookTarget = null" />
     <OpenModal v-if="viewTarget" :locker="viewTarget" @close="viewTarget = null" />
+    <UnbookModal v-if="unbookTarget" :locker="unbookTarget" @confirm="handleUnbook" @cancel="unbookTarget = null" />
   </div>
 </template>
 
 <script setup>
-// ... (script remains the same)
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { auth } from '../stores/auth'
@@ -49,6 +49,7 @@ import { lockerAPI, bookingAPI, authAPI } from '../api'
 import LockerCell from '../components/LockerCell.vue'
 import BookModal from '../components/BookModal.vue'
 import OpenModal from '../components/OpenModal.vue'
+import UnbookModal from '../components/UnbookModal.vue'
 
 const router = useRouter()
 const lockers = ref([])
@@ -57,6 +58,7 @@ const bookings = ref([])
 const loadingLockers = ref(true)
 const bookTarget = ref(null)
 const viewTarget = ref(null)
+const unbookTarget = ref(null)
 
 const otherUsers = computed(() =>
   users.value.filter(u => u.id !== auth.user.id)
@@ -86,6 +88,10 @@ function openBookModal(locker) {
   bookTarget.value = locker
 }
 
+function openUnbookModal(locker) {
+  unbookTarget.value = locker
+}
+
 async function openViewModal(locker) {
   // fetch full locker detail including booking info
   const res = await lockerAPI.getOne(locker.id)
@@ -105,6 +111,7 @@ async function handleBook({ lockerId, receiverId }) {
 async function handleUnbook(locker) {
   try {
     await bookingAPI.unbook(auth.user.id, locker.id)
+    unbookTarget.value = null
     await fetchLockers()
   } catch (err) {
     alert(err.response?.data?.error || 'Unbook failed')
