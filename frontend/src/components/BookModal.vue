@@ -1,12 +1,13 @@
 <template>
-  <div class="overlay" @click.self="$emit('cancel')">
-    <div class="modal card">
-      <h3 class="modal-title">📦 Deposit Item</h3>
-      <p class="modal-sub">Locker <strong>#{{ locker.id }}</strong></p>
+  <div class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50" @click.self="$emit('cancel')">
+    <div class="w-full max-w-sm bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+      <h3 class="text-xl font-bold text-gray-800 mb-1">📦 Deposit Item</h3>
+      <p class="text-sm text-gray-500 mb-6">Locker <strong class="font-semibold text-gray-700">#{{ locker.id }}</strong></p>
 
-      <div class="field">
-        <label>Send to (Receiver)</label>
-        <select v-model="selectedReceiver">
+      <div class="mb-4">
+        <label class="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Send to (Receiver)</label>
+        <select v-model="selectedReceiver"
+                class="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
           <option disabled value="">— Select a user —</option>
           <option v-for="u in users" :key="u.id" :value="u.id">
             {{ u.username }}
@@ -14,11 +15,11 @@
         </select>
       </div>
 
-      <p v-if="error" class="error-msg">{{ error }}</p>
+      <p v-if="error" class="text-red-500 text-xs text-center mb-4">{{ error }}</p>
 
-      <div class="modal-actions">
-        <button class="btn btn-ghost" @click="$emit('cancel')">Cancel</button>
-        <button class="btn btn-primary" @click="confirm" :disabled="!selectedReceiver">
+      <div class="flex justify-end gap-3 mt-6">
+        <button class="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300" @click="$emit('cancel')">Cancel</button>
+        <button class="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50" @click="confirm" :disabled="!selectedReceiver">
           Confirm
         </button>
       </div>
@@ -50,38 +51,3 @@ function confirm() {
 }
 </script>
 
-<style scoped>
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.65);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-  padding: 1rem;
-}
-.modal {
-  width: 100%;
-  max-width: 400px;
-}
-.modal-title {
-  font-size: 1.2rem;
-  font-weight: 700;
-  margin-bottom: 0.25rem;
-}
-.modal-sub {
-  color: #718096;
-  font-size: 0.875rem;
-  margin-bottom: 1.5rem;
-}
-.field {
-  margin-bottom: 1rem;
-}
-.modal-actions {
-  display: flex;
-  gap: 0.75rem;
-  justify-content: flex-end;
-  margin-top: 1.5rem;
-}
-</style>

@@ -1,22 +1,26 @@
 <template>
-  <div class="page">
+  <div class="min-h-screen flex flex-col bg-gray-50">
     <!-- Navbar -->
-    <header class="navbar">
-      <span class="brand">🔐 SSLMS</span>
-      <div class="nav-right">
-        <span class="welcome">👤 {{ auth.user.username }}</span>
-        <button class="btn btn-ghost" @click="handleLogout">Log Out</button>
+    <header class="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-gray-200">
+      <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <span class="text-xl font-bold text-indigo-600">🔐 SSLMS</span>
+          <div class="flex items-center gap-4">
+            <span class="text-sm font-medium text-gray-600">👤 {{ auth.user.username }}</span>
+            <button class="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300" @click="handleLogout">Log Out</button>
+          </div>
+        </div>
       </div>
     </header>
 
     <!-- Main content -->
-    <main class="main">
-      <h2 class="section-title">Locker Grid</h2>
-      <p class="section-sub">Click an available locker to deposit an item. Click your occupied locker to retrieve it.</p>
+    <main class="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-2">Locker Grid</h2>
+      <p class="text-sm text-gray-500 mb-8">Click an available locker to deposit an item. Click your occupied locker to retrieve it.</p>
 
-      <div v-if="loadingLockers" class="loading">Loading lockers…</div>
+      <div v-if="loadingLockers" class="text-center text-gray-500 py-12">Loading lockers…</div>
 
-      <div v-else class="grid">
+      <div v-else class="grid grid-cols-5 gap-4">
         <LockerCell
           v-for="locker in lockers"
           :key="locker.id"
@@ -29,25 +33,14 @@
       </div>
     </main>
 
-    <!-- Book Modal -->
-    <BookModal
-      v-if="bookTarget"
-      :locker="bookTarget"
-      :users="otherUsers"
-      @confirm="handleBook"
-      @cancel="bookTarget = null"
-    />
-
-    <!-- Open/View Modal -->
-    <OpenModal
-      v-if="viewTarget"
-      :locker="viewTarget"
-      @close="viewTarget = null"
-    />
+    <!-- Modals -->
+    <BookModal v-if="bookTarget" :locker="bookTarget" :users="otherUsers" @confirm="handleBook" @cancel="bookTarget = null" />
+    <OpenModal v-if="viewTarget" :locker="viewTarget" @close="viewTarget = null" />
   </div>
 </template>
 
 <script setup>
+// ... (script remains the same)
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { auth } from '../stores/auth'
@@ -118,66 +111,3 @@ function handleLogout() {
 onMounted(fetchLockers)
 </script>
 
-<style scoped>
-.page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.9rem 2rem;
-  background: #1a1d27;
-  border-bottom: 1px solid #2d3148;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-.brand {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #6366f1;
-}
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-.welcome {
-  font-size: 0.9rem;
-  color: #a0aec0;
-}
-
-.main {
-  flex: 1;
-  padding: 2rem;
-  max-width: 900px;
-  margin: 0 auto;
-  width: 100%;
-}
-.section-title {
-  font-size: 1.4rem;
-  font-weight: 700;
-  margin-bottom: 0.4rem;
-}
-.section-sub {
-  color: #718096;
-  font-size: 0.875rem;
-  margin-bottom: 2rem;
-}
-
-.loading {
-  text-align: center;
-  color: #718096;
-  padding: 3rem;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 1rem;
-}
-</style>
