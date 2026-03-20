@@ -7,7 +7,8 @@ def create_table():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS lockers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            status TEXT NOT NULL CHECK(status IN ('available', 'occupied'))
+            status TEXT NOT NULL CHECK(status IN ('available', 'occupied')),
+            item_image_path TEXT
         )
     """)
 
@@ -97,6 +98,40 @@ def set_status(locker_id, status):
         return True
     except Exception as e:
         print(f"Update locker status failed: {e}")
+        return False
+    finally:
+        conn.close()
+
+def set_image_path(locker_id, image_path):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            "UPDATE lockers SET item_image_path = ? WHERE id = ?",
+            (image_path, locker_id)
+        )
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Update locker image path failed: {e}")
+        return False
+    finally:
+        conn.close()
+
+def get_image(locker_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            "SELECT item_image_path FROM lockers WHERE id = ?",
+            (locker_id,)
+        )
+        row = cursor.fetchone()
+        return row[0] if row else None
+    except Exception as e:
+        print(f"Getting locker image failed: {e}")
         return False
     finally:
         conn.close()

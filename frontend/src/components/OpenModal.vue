@@ -5,7 +5,7 @@
       <p class="text-sm text-gray-500 mb-6">Locker <strong class="font-semibold text-gray-700">#{{ locker.id }}</strong></p>
 
       <div class="flex flex-col items-center gap-6">
-        <img src="../assets/package.svg" alt="Package" class="w-36 h-36 package-anim" />
+        <img :src="getImageUrl(locker.item_image_path)" alt="Package" class="w-36 h-36 package-anim" />
 
         <div class="w-full bg-gray-100 rounded-lg p-4 text-left space-y-2 border border-gray-200">
           <div class="flex justify-between items-baseline">
@@ -31,6 +31,13 @@ defineProps({
   locker: { type: Object, required: true },
 })
 defineEmits(['close'])
+
+function getImageUrl(path) {
+  if (!path) {
+    return new URL('../assets/package.svg', import.meta.url).href
+  }
+  return `http://localhost:5000/uploads/${path.split(/[\\/]/).pop()}`
+}
 </script>
 
 <style scoped>

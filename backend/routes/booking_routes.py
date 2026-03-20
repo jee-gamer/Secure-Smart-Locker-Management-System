@@ -10,11 +10,12 @@ def book():
     user_id = data.get('user_id')
     receiver_id = data.get('receiver_id')
     locker_id = data.get('locker_id')
+    item_image = data.get('item_image')
 
     if not user_id or not receiver_id or not locker_id:
         return jsonify({"error": "user_id, receiver_id, and locker_id are required"}), 400
 
-    result = create_booking(user_id, receiver_id, locker_id)
+    result = create_booking(user_id, receiver_id, locker_id, item_image)
 
     if "error" in result:
         return jsonify(result), 400

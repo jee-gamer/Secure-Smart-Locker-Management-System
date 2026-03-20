@@ -24,6 +24,15 @@
         </ul>
       </div>
 
+      <div class="mb-4">
+        <label class="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Item Image</label>
+        <input type="file" @change="onFileChange" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"/>
+      </div>
+
+      <div v-if="imagePreviewUrl" class="mb-4">
+        <img :src="imagePreviewUrl" alt="Image preview" class="max-h-40 rounded-lg mx-auto" />
+      </div>
+
       <p v-if="error" class="text-red-500 text-xs text-center mb-4">{{ error }}</p>
 
       <div class="flex justify-end gap-3 mt-6">
@@ -49,6 +58,8 @@ const searchQuery = ref('')
 const selectedReceiver = ref(null)
 const showSuggestions = ref(false)
 const error = ref('')
+const itemImage = ref(null)
+const imagePreviewUrl = ref('')
 
 const filteredUsers = computed(() => {
   if (!searchQuery.value) {
@@ -72,6 +83,16 @@ function hideSuggestions() {
   }, 200)
 }
 
+function onFileChange(e) {
+  const file = e.target.files[0]
+  itemImage.value = file
+  if (file) {
+    imagePreviewUrl.value = URL.createObjectURL(file)
+  } else {
+    imagePreviewUrl.value = ''
+  }
+}
+
 function confirm() {
   if (!selectedReceiver.value) {
     error.value = 'Please select a receiver'
@@ -80,7 +101,7 @@ function confirm() {
   emit('confirm', {
     lockerId: props.locker.id,
     receiverId: selectedReceiver.value.id,
+    itemImage: itemImage.value,
   })
 }
 </script>
-

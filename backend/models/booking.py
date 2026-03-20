@@ -25,7 +25,7 @@ def create_table():
     conn.commit()
     conn.close()
 
-def book(user_id, receiver_id, locker_id, item):
+def book(user_id, receiver_id, locker_id):
     conn = get_connection()
     cursor = conn.cursor()
 
