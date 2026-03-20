@@ -68,7 +68,7 @@ npm install
 npm run dev
 ```
 
-# Users
+# Default Users
 
 | username | password |
 |----------|----------|

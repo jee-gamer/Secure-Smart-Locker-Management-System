@@ -20,10 +20,10 @@ const emit = defineEmits(['book', 'open', 'unbook'])
 
 const isAvailable = computed(() => props.locker.status === 'available')
 const iAmSender = computed(() => {
-  return props.booking && props.booking.user_id === props.currentUser.id
+  return props.booking && props.currentUser && props.booking.user_id === props.currentUser.id
 })
 const iAmReceiver = computed(() => {
-  return props.booking && props.booking.receiver_id === props.currentUser.id
+  return props.booking && props.currentUser && props.booking.receiver_id === props.currentUser.id
 })
 
 const icon = computed(() => {

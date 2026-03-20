@@ -27,8 +27,8 @@ export const lockerAPI = {
 }
 
 export const bookingAPI = {
-  book: (user_id, receiver_id, locker_id) =>
-    api.post('/bookings/', { user_id, receiver_id, locker_id }),
+  book: (formData) =>
+    api.post('/bookings/', formData),
   unbook: (user_id, locker_id) =>
     api.delete('/bookings/', { data: { user_id, locker_id } }),
   getActive: () => api.get('/bookings/get-active')

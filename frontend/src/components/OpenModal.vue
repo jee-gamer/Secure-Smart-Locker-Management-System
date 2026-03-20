@@ -5,7 +5,7 @@
       <p class="text-sm text-gray-500 mb-6">Locker <strong class="font-semibold text-gray-700">#{{ locker.id }}</strong></p>
 
       <div class="flex flex-col items-center gap-6">
-        <img :src="imageSrc" @error="onImageError" alt="Package" class="w-36 h-36 package-anim" />
+        <img :src="imageSrc" @error="onImageError" alt="Package" class="w-60 h-60 object-contain package-anim" />
         <p v-if="empty" class="text-gray-500">There is nothing!</p>
         <div class="w-full bg-gray-100 rounded-lg p-4 text-left space-y-2 border border-gray-200">
           <div class="flex justify-between items-baseline">

@@ -6,7 +6,7 @@
         <div class="flex items-center justify-between h-16">
           <span class="text-xl font-bold text-indigo-600">🔐 SSLMS</span>
           <div class="flex items-center gap-4">
-            <span class="text-sm font-medium text-gray-600">👤 {{ auth.user.username }}</span>
+            <span v-if="auth.user" class="text-sm font-medium text-gray-600">👤 {{ auth.user.username }}</span>
             <button class="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300" @click="handleLogout">Log Out</button>
           </div>
         </div>
@@ -98,9 +98,17 @@ async function openViewModal(locker) {
   viewTarget.value = res.data
 }
 
-async function handleBook({ lockerId, receiverId }) {
+async function handleBook({ lockerId, receiverId, itemImage }) {
+  const formData = new FormData();
+  formData.append('user_id', auth.user.id);
+  formData.append('receiver_id', receiverId);
+  formData.append('locker_id', lockerId);
+  if (itemImage) {
+    formData.append('item_image', itemImage);
+  }
+
   try {
-    await bookingAPI.book(auth.user.id, receiverId, lockerId)
+    await bookingAPI.book(formData);
     bookTarget.value = null
     await fetchLockers()
   } catch (err) {
