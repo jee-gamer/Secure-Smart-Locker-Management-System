@@ -5,8 +5,8 @@
       <p class="text-sm text-gray-500 mb-6">Locker <strong class="font-semibold text-gray-700">#{{ locker.id }}</strong></p>
 
       <div class="flex flex-col items-center gap-6">
-        <img :src="getImageUrl(locker.item_image_path)" alt="Package" class="w-36 h-36 package-anim" />
-
+        <img :src="imageSrc" @error="onImageError" alt="Package" class="w-36 h-36 package-anim" />
+        <p v-if="empty" class="text-gray-500">There is nothing!</p>
         <div class="w-full bg-gray-100 rounded-lg p-4 text-left space-y-2 border border-gray-200">
           <div class="flex justify-between items-baseline">
             <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">From</span>
@@ -27,22 +27,36 @@
 </template>
 
 <script setup>
-defineProps({
+import { ref, watchEffect } from "vue";
+import { auth } from '../stores/auth'
+import { lockerAPI } from '../api'
+
+const props = defineProps({
   locker: { type: Object, required: true },
 })
 defineEmits(['close'])
 
-function getImageUrl(path) {
-  if (!path) {
-    return new URL('../assets/package.svg', import.meta.url).href
+const defaultImage = new URL('../assets/empty-box.svg', import.meta.url).href;
+const imageSrc = ref(defaultImage);
+const empty = ref(true);
+
+watchEffect(() => {
+  if (props.locker) {
+    imageSrc.value = lockerAPI.getImageUrl(props.locker.id, auth.user.id);
+    empty.value = false
   }
-  return `http://localhost:5000/uploads/${path.split(/[\\/]/).pop()}`
+});
+
+function onImageError() {
+  // If the image fails to load (e.g., 404 error), set it to the default.
+  imageSrc.value = defaultImage;
+  empty.value = true
 }
 </script>
 
 <style scoped>
 .package-anim {
-  filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.3));
+  filter: drop-shadow(0 0 12px rgba(198, 120, 44, 0.3));
   animation: float 3s ease-in-out infinite;
 }
 @keyframes float {

@@ -35,7 +35,7 @@ def db_get_all_lockers():
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT id, status, location FROM lockers ORDER BY id")
+    cursor.execute("SELECT id, status FROM lockers ORDER BY id")
     rows = cursor.fetchall()
 
     conn.close()
@@ -49,7 +49,7 @@ def db_get_locker_with_booking(locker_id):
 
     cursor.execute("""
         SELECT
-            l.id, l.status, l.location,
+            l.id, l.status, l.item_image_path,
             b.id AS booking_id,
             b.user_id AS sender_id,
             sender.username AS sender_username,
@@ -119,19 +119,19 @@ def set_image_path(locker_id, image_path):
     finally:
         conn.close()
 
-def get_image(locker_id):
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    try:
-        cursor.execute(
-            "SELECT item_image_path FROM lockers WHERE id = ?",
-            (locker_id,)
-        )
-        row = cursor.fetchone()
-        return row[0] if row else None
-    except Exception as e:
-        print(f"Getting locker image failed: {e}")
-        return False
-    finally:
-        conn.close()
+# def get_image(locker_id):
+#     conn = get_connection()
+#     cursor = conn.cursor()
+#
+#     try:
+#         cursor.execute(
+#             "SELECT item_image_path FROM lockers WHERE id = ?",
+#             (locker_id,)
+#         )
+#         row = cursor.fetchone()
+#         return row[0] if row else None
+#     except Exception as e:
+#         print(f"Getting locker image failed: {e}")
+#         return None
+#     finally:
+#         conn.close()

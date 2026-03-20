@@ -67,3 +67,12 @@ python -m backend.app
 npm install
 npm run dev
 ```
+
+# Users
+
+| username | password |
+|----------|----------|
+| man      | 1234     | 
+| user1    | 1234     | 
+| user2    | 1234     | 
+| stupid   | 1234     |

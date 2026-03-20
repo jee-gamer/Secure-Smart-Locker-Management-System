@@ -1,4 +1,5 @@
 from backend.models.initialize import get_connection
+from werkzeug.security import generate_password_hash
 
 def create_table():
     conn = get_connection()
@@ -22,12 +23,19 @@ def db_create_user(username, password, role='user'):
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute(
-        "INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
-        (username, password, role)
-    )
-    conn.commit()
-    conn.close()
+    hashed_password = generate_password_hash(password)
+    try:
+        cursor.execute(
+            "INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
+            (username, hashed_password, role)
+        )
+        conn.commit()
+    except conn.IntegrityError:
+        # This will happen if the username is already taken (due to UNIQUE constraint)
+        # We can ignore it for a seeding script.
+        pass
+    finally:
+        conn.close()
 
 def db_get_user_by_username(username):
     conn = get_connection()
@@ -50,3 +58,16 @@ def db_get_all_users():
 
     conn.close()
     return [dict(r) for r in rows]
+
+def seed_initial_users():
+    """Creates a set of predefined users if they don't exist."""
+    users_to_create = [
+        {"username": "man", "password": "1234"},
+        {"username": "user1", "password": "1234"},
+        {"username": "user2", "password": "1234"},
+        {"username": "stupid", "password": "1234"},
+    ]
+    print("Seeding initial users...")
+    for user_data in users_to_create:
+        db_create_user(user_data["username"], user_data["password"])
+    print("User seeding complete.")

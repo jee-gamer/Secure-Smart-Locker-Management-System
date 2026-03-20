@@ -91,6 +91,24 @@ def get_all_active_bookings():
         return [dict(r) for r in rows]
     except Exception as e:
         print(f"Getting active bookings failed: {e}")
-        return False
+        return None
+    finally:
+        conn.close()
+
+def get_booking_for_locker(locker_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    try:
+        # THERE SHOULD ONLY BE ONE
+        cursor.execute(
+            "SELECT * FROM bookings WHERE locker_id = ? AND end_time IS NULL",
+            (locker_id,)
+        )
+        row = cursor.fetchone()
+        return dict(row) if row else None
+    except Exception as e:
+        print(f"Getting booking for locker: {locker_id} failed: {e}")
+        return None
     finally:
         conn.close()

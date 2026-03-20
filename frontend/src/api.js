@@ -4,6 +4,14 @@ const api = axios.create({
   baseURL: 'http://localhost:5000',
 })
 
+api.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    const message = err.response?.data?.error || 'Request failed'
+    return Promise.reject(new Error(message))
+  }
+)
+
 export const authAPI = {
   register: (username, password) =>
     api.post('/users/register', { username, password }),
@@ -15,6 +23,7 @@ export const authAPI = {
 export const lockerAPI = {
   getAll: () => api.get('/lockers/'),
   getOne: (id) => api.get(`/lockers/${id}`),
+  getImageUrl: (locker_id, user_id) => `${api.defaults.baseURL}/lockers/${locker_id}/image/${user_id}`,
 }
 
 export const bookingAPI = {

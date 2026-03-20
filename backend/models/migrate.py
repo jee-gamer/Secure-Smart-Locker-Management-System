@@ -5,6 +5,7 @@ def run_migrations():
     locker.create_table()
     booking.create_table()
     locker.seed_lockers()
+    user.seed_initial_users()
     print("Database initialized.")
 
 if __name__ == "__main__":
