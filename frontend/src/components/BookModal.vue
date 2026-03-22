@@ -26,7 +26,7 @@
 
       <div class="mb-4">
         <label class="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Item Image</label>
-        <input type="file" @change="onFileChange" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"/>
+        <input type="file" @change="onFileChange" accept="image/png, image/jpeg, image/jpg" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"/>
       </div>
 
       <div v-if="imagePreviewUrl" class="mb-4">
