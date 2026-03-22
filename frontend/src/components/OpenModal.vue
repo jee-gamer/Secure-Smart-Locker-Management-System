@@ -42,8 +42,7 @@ const empty = ref(true);
 
 watchEffect(() => {
   if (props.locker) {
-    const [image, status_code] = lockerAPI.getImageUrl(props.locker.id, auth.user.id);
-    imageSrc.value = image
+    imageSrc.value = lockerAPI.getImageUrl(props.locker.id, auth.user.id);
     empty.value = false
   }
 });
