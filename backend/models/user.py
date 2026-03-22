@@ -41,23 +41,35 @@ def db_get_user_by_username(username):
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute(
-        "SELECT * FROM users WHERE username = ?", (username,)
-    )
+    try:
+        cursor.execute(
+            "SELECT * FROM users WHERE username = ?", (username,)
+        )
+        user = cursor.fetchone()  # will return None if none is found
+        conn.close()
+        return dict(user) if user else None
+    except Exception as e:
+        print(f"Failed getting user by username - {username}: {e}")
+        return None
+    finally:
+        conn.close()
 
-    user = cursor.fetchone() # will return None if none is found
-    conn.close()
-    return dict(user) if user else None
 
 def db_get_all_users():
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT id, username, role FROM users")
-    rows = cursor.fetchall()
+    try:
+        cursor.execute("SELECT id, username, role FROM users")
+        rows = cursor.fetchall()
 
-    conn.close()
-    return [dict(r) for r in rows]
+        conn.close()
+        return [dict(r) for r in rows]
+    except Exception as e:
+        print(f"Failed getting all users: {e}")
+        return None
+    finally:
+        conn.close()
 
 def seed_initial_users():
     """Creates a set of predefined users if they don't exist."""

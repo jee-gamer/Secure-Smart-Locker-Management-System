@@ -17,5 +17,5 @@ def get_locker(locker_id):
 
 @locker_bp.route('/<int:locker_id>/image/<int:user_id>', methods=['GET'])
 def get_item(user_id, locker_id):
-    image_response = get_locker_image(user_id, locker_id)
-    return image_response
+    image_response, status_code = get_locker_image(user_id, locker_id)
+    return image_response, status_code

@@ -16,12 +16,12 @@ def book():
     if not user_id or not receiver_id or not locker_id:
         return jsonify({"error": "user_id, receiver_id, and locker_id are required"}), 400
 
-    result = create_booking(user_id, receiver_id, locker_id, item_image)
+    result, status_code = create_booking(user_id, receiver_id, locker_id, item_image)
 
     if "error" in result:
-        return jsonify(result), 400
+        return jsonify(result), status_code
 
-    return jsonify(result), 201
+    return jsonify(result), status_code
 
 
 @booking_bp.route('/', methods=['DELETE'])
@@ -33,17 +33,19 @@ def unbook():
     if not user_id or not locker_id:
         return jsonify({"error": "user_id and locker_id are required"}), 400
 
-    result = create_unbook(user_id, locker_id)
+    result, status_code = create_unbook(user_id, locker_id)
 
     if "error" in result:
-        return jsonify(result), 400
+        return jsonify(result), status_code
 
-    return jsonify(result), 200
+    return jsonify(result), status_code
 
 
 @booking_bp.route('/get-active', methods=['GET'])
 def get_active():
-
+    """
+    Connect directly to model so need to specify HTTP code
+    """
     active_bookings = get_all_active_bookings()
 
     return jsonify(active_bookings), 200

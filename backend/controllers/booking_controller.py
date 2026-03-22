@@ -16,10 +16,10 @@ def create_booking(user_id, receiver_id, locker_id, item_image):
     active = is_occupied(locker_id)
 
     if active:
-        return {"message": "The locker is already occupied"}
+        return {"message": "The locker is already occupied"}, 409
 
     if not book(user_id, receiver_id, locker_id):
-        return {"error": f"Failed to book locker: {locker_id}"}
+        return {"error": f"Failed to book locker: {locker_id}"}, 400
 
     if item_image:
         filename = secure_filename(item_image.filename)
@@ -35,19 +35,19 @@ def create_booking(user_id, receiver_id, locker_id, item_image):
 
     set_status(locker_id, "occupied")
     print("--- Booking Complete ---")
-    return {"message": f"Successfully booked locker: {locker_id}"}
+    return {"message": f"Successfully booked locker: {locker_id}"}, 200
 
 
 def create_unbook(user_id, locker_id):
     active = is_occupied(locker_id)
 
     if not active:
-        return {"message": "The locker is not booked"}
+        return {"message": "The locker is not booked"}, 409
 
     if not unbook(user_id, locker_id):
-        return {"error": f"Failed to unbook locker: {locker_id}"}
+        return {"error": f"Failed to unbook locker: {locker_id}"}, 400
 
     set_status(locker_id, "available")
 
-    return {"message": f"Successfully unbooked locker: {locker_id}"}
+    return {"message": f"Successfully unbooked locker: {locker_id}"}, 200
 

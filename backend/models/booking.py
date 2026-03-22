@@ -59,7 +59,7 @@ def unbook(user_id, locker_id):
     finally:
         conn.close()
 
-def is_active(user_id, locker_id):
+def is_active(user_id, locker_id) -> bool:
     conn = get_connection()
     cursor = conn.cursor()
 
