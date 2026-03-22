@@ -50,7 +50,7 @@ def create_unbook(user_id, locker_id):
     if not active:
         return {"message": "The locker is not booked"}, 409
 
-    authorized = locker['user_id'] == user_id
+    authorized = locker['sender_id'] == user_id
     if not authorized:
         return {"message": "You are not the locker booker"}, 403
 
