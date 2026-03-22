@@ -7,7 +7,7 @@ user_bp = Blueprint('users', __name__, url_prefix='/users')
 @user_bp.route('/', methods=['GET'])
 def list_users():
     all_users, status_code = get_all_users()
-    return jsonify(get_all_users()), status_code
+    return jsonify(all_users), status_code
 
 @user_bp.route('/register', methods=['POST'])
 def register():

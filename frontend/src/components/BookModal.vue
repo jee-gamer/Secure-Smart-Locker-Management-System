@@ -62,10 +62,13 @@ const itemImage = ref(null)
 const imagePreviewUrl = ref('')
 
 const filteredUsers = computed(() => {
+  const validUsers = props.users.filter(user => user && user.username)
+
   if (!searchQuery.value) {
-    return props.users
+    return validUsers
   }
-  return props.users.filter(user =>
+
+  return validUsers.filter(user =>
     user.username.toLowerCase().includes(searchQuery.value.toLowerCase())
   )
 })
