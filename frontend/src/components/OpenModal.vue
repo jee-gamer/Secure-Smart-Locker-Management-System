@@ -43,7 +43,13 @@ const empty = ref(true);
 watchEffect(() => {
   if (props.locker) {
     imageSrc.value = lockerAPI.getImageUrl(props.locker.id, auth.user.id);
-    empty.value = false
+    empty.value = false;
+    // Log the access whenever the modal is shown with a locker
+    if (auth.user && auth.user.id) {
+      lockerAPI.logAccess(props.locker.id, auth.user.id).catch(err => {
+        console.error('Failed to log locker access', err);
+      });
+    }
   }
 });
 

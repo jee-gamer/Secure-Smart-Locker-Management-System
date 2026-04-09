@@ -24,6 +24,8 @@ export const lockerAPI = {
   getAll: () => api.get('/lockers/'),
   getOne: (id) => api.get(`/lockers/${id}`),
   getImageUrl: (locker_id, user_id) => `${api.defaults.baseURL}/lockers/${locker_id}/image/${user_id}`,
+  logAccess: (locker_id, user_id) => api.post(`/lockers/${locker_id}/access`, { user_id }),
+  getAccessLogs: (user_id) => api.get('/lockers/access-logs', { params: { user_id } })
 }
 
 export const bookingAPI = {
@@ -31,5 +33,6 @@ export const bookingAPI = {
     api.post('/bookings/', formData),
   unbook: (user_id, locker_id) =>
     api.delete('/bookings/', { data: { user_id, locker_id } }),
-  getActive: () => api.get('/bookings/get-active')
+  getActive: () => api.get('/bookings/get-active'),
+  getLogs: (user_id) => api.get('/bookings/logs', { params: { user_id } })
 }

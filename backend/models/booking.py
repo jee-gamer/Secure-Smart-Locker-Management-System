@@ -95,6 +95,27 @@ def get_all_active_bookings():
     finally:
         conn.close()
 
+def get_all_bookings():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute('''
+            SELECT b.id, b.start_time, b.end_time, b.locker_id,
+                   s.username AS sender, r.username AS receiver
+            FROM bookings b
+            JOIN users s ON b.user_id = s.id
+            JOIN users r ON b.receiver_id = r.id
+            ORDER BY b.start_time DESC
+        ''')
+        rows = cursor.fetchall()
+        return [dict(r) for r in rows]
+    except Exception as e:
+        print(f"Getting all bookings failed: {e}")
+        return None
+    finally:
+        conn.close()
+
 def get_booking_for_locker(locker_id):
     conn = get_connection()
     cursor = conn.cursor()

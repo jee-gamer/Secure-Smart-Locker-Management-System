@@ -6,7 +6,10 @@
         <div class="flex items-center justify-between h-16">
           <span class="text-xl font-bold text-indigo-600">🔐 SSLMS</span>
           <div class="flex items-center gap-4">
-            <span v-if="auth.user" class="text-sm font-medium text-gray-600">👤 {{ auth.user.username }}</span>
+            <template v-if="auth.user">
+              <span class="text-sm font-medium text-gray-600">👤 {{ auth.user.username }}</span>
+              <router-link v-if="auth.user.role === 'admin'" to="/admin/logs" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">Admin Logs</router-link>
+            </template>
             <button class="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300" @click="handleLogout">Log Out</button>
           </div>
         </div>

@@ -54,6 +54,22 @@ def db_get_user_by_username(username):
     finally:
         conn.close()
 
+def db_get_user_by_id(user_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            "SELECT * FROM users WHERE id = ?", (user_id,)
+        )
+        user = cursor.fetchone()
+        conn.close()
+        return dict(user) if user else None
+    except Exception as e:
+        print(f"Failed getting user by id - {user_id}: {e}")
+        return None
+    finally:
+        conn.close()
 
 def db_get_all_users():
     conn = get_connection()
@@ -74,12 +90,13 @@ def db_get_all_users():
 def seed_initial_users():
     """Creates a set of predefined users if they don't exist."""
     users_to_create = [
-        {"username": "man", "password": "1234"},
-        {"username": "user1", "password": "1234"},
-        {"username": "user2", "password": "1234"},
-        {"username": "stupid", "password": "1234"},
+        {"username": "admin", "password": "adminpassword", "role": "admin"},
+        {"username": "man", "password": "1234", "role": "user"},
+        {"username": "user1", "password": "1234", "role": "user"},
+        {"username": "user2", "password": "1234", "role": "user"},
+        {"username": "stupid", "password": "1234", "role": "user"},
     ]
     print("Seeding initial users...")
     for user_data in users_to_create:
-        db_create_user(user_data["username"], user_data["password"])
+        db_create_user(user_data["username"], user_data["password"], user_data.get("role", "user"))
     print("User seeding complete.")

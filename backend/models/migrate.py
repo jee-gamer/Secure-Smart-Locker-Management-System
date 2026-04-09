@@ -1,9 +1,10 @@
-from backend.models import user, locker, booking
+from backend.models import user, locker, booking, access_log
 
 def run_migrations():
     user.create_table()
     locker.create_table()
     booking.create_table()
+    access_log.create_table()
     locker.seed_lockers()
     user.seed_initial_users()
     print("Database initialized.")

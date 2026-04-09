@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from backend.controllers.booking_controller import create_booking, create_unbook
+from backend.controllers.booking_controller import create_booking, create_unbook, get_all_log_bookings
 from backend.models.booking import get_all_active_bookings
 
 booking_bp = Blueprint('bookings', __name__, url_prefix='/bookings')
@@ -49,3 +49,12 @@ def get_active():
     active_bookings = get_all_active_bookings()
 
     return jsonify(active_bookings), 200
+
+@booking_bp.route('/logs', methods=['GET'])
+def get_logs():
+    user_id = request.args.get('user_id')
+    if not user_id:
+        return jsonify({"error": "user_id is required"}), 400
+
+    result, status_code = get_all_log_bookings(user_id)
+    return jsonify(result), status_code

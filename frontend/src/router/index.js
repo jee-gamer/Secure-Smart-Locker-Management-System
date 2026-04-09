@@ -3,6 +3,7 @@ import { auth } from '../stores/auth'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import LockersView from '../views/LockersView.vue'
+import AdminLogsView from '../views/AdminLogsView.vue'
 
 const routes = [
   { path: '/', redirect: '/lockers' },
@@ -11,6 +12,11 @@ const routes = [
   {
     path: '/lockers',
     component: LockersView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin/logs',
+    component: AdminLogsView,
     meta: { requiresAuth: true }
   },
 ]
