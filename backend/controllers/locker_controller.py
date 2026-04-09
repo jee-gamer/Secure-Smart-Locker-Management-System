@@ -1,7 +1,6 @@
 import os
 from flask import send_file, jsonify
 from backend.models.locker import db_get_locker_with_booking
-from backend.models.booking import get_booking_for_locker
 
 def get_locker_image(user_id, locker_id):
     locker = db_get_locker_with_booking(locker_id)
@@ -21,3 +20,5 @@ def get_locker_image(user_id, locker_id):
         return jsonify({"error": "Image file not found on disk"}), 404
 
     return send_file(image_path), 200
+
+

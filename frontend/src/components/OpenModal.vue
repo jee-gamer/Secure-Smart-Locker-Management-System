@@ -29,7 +29,7 @@
 <script setup>
 import { ref, watchEffect } from "vue";
 import { auth } from '../stores/auth'
-import { lockerAPI } from '../api'
+import { lockerAPI, logAPI } from '../api'
 
 const props = defineProps({
   locker: { type: Object, required: true },
@@ -46,7 +46,7 @@ watchEffect(() => {
     empty.value = false;
     // Log the access whenever the modal is shown with a locker
     if (auth.user && auth.user.id) {
-      lockerAPI.logAccess(props.locker.id, auth.user.id).catch(err => {
+      logAPI.logAccess(props.locker.id, auth.user.id).catch(err => {
         console.error('Failed to log locker access', err);
       });
     }

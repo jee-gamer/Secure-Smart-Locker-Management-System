@@ -48,8 +48,8 @@ def unbook(user_id, locker_id):
 
     try:
         cursor.execute(
-            "UPDATE bookings SET end_time = ? WHERE user_id = ? AND locker_id = ?",
-            (datetime.now(), user_id, locker_id)
+            "UPDATE bookings SET end_time = CURRENT_TIMESTAMP WHERE user_id = ? AND locker_id = ?",
+            (user_id, locker_id)
         )
         conn.commit()
         return True

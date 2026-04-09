@@ -36,7 +36,7 @@
             <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Sender</th>
             <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Receiver</th>
             <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Booked At</th>
-            <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Retrieved At</th>
+            <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Unbooked At</th>
             <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
           </tr>
         </thead>
@@ -88,7 +88,13 @@
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+              <span v-if="alog.action === 'opened'" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                OPENED
+              </span>
+              <span v-else-if="alog.action === 'unauthorized_attempt'" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                UNAUTHORIZED ATTEMPT
+              </span>
+              <span v-else class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                 {{ alog.action.toUpperCase() }}
               </span>
             </td>
@@ -105,7 +111,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { bookingAPI, lockerAPI } from '../api'
+import { logAPI } from '../api'
 import { auth } from '../stores/auth'
 import { useRouter } from 'vue-router'
 
@@ -117,7 +123,11 @@ const router = useRouter()
 
 function formatDate(dateString) {
   if (!dateString) return ''
-  const date = new Date(dateString)
+  // SQLite CURRENT_TIMESTAMP generates UTC formats like '2026-04-09 06:18:11'
+  // and JS Date parser interprets 'YYYY-MM-DD HH:MM:SS' specifically as LOCAL TIME unless specified otherwise.
+  // We append 'Z' (Zulu/UTC) if not already explicitly presented, to ensure reliable timezone conversion.
+  const utcDateStr = dateString.endsWith('Z') ? dateString : dateString.replace(' ', 'T') + 'Z'
+  const date = new Date(utcDateStr)
   return new Intl.DateTimeFormat('en-US', {
     month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit'
   }).format(date)
@@ -131,8 +141,8 @@ onMounted(async () => {
 
   try {
     const [bookingRes, accessRes] = await Promise.all([
-      bookingAPI.getLogs(auth.user.id),
-      lockerAPI.getAccessLogs(auth.user.id)
+      logAPI.getBookingLogs(auth.user.id),
+      logAPI.getAccessLogs(auth.user.id)
     ]);
 
     logs.value = bookingRes.data.data;

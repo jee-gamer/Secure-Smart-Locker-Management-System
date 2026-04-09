@@ -72,14 +72,3 @@ def create_unbook(user_id, locker_id):
 
     return {"message": f"Successfully unbooked locker: {locker_id}"}, 200
 
-
-def get_all_log_bookings(user_id):
-    from backend.models.user import db_get_user_by_id
-    user = db_get_user_by_id(user_id)
-    if not user or user.get('role') != 'admin':
-        return {"error": "Unauthorized. Admin access required."}, 403
-
-    bookings = get_all_bookings()
-    if bookings is None:
-        return {"error": "Failed to retrieve bookings"}, 500
-    return {"data": bookings}, 200

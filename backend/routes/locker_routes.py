@@ -16,31 +16,6 @@ def get_locker(locker_id):
         return jsonify({"error": "Locker not found"}), 404
     return jsonify(locker), 200
 
-@locker_bp.route('/<int:locker_id>/access', methods=['POST'])
-def log_locker_access(locker_id):
-    data = request.get_json()
-    user_id = data.get('user_id') if data else None
-    if not user_id:
-        return jsonify({"error": "user_id is required"}), 400
-
-    from backend.models.access_log import log_access
-    log_access(user_id, locker_id, "opened")
-    return jsonify({"message": "Access logged successfully"}), 200
-
-@locker_bp.route('/access-logs', methods=['GET'])
-def get_access_logs():
-    user_id = request.args.get('user_id')
-    if not user_id:
-        return jsonify({"error": "user_id is required"}), 400
-
-    user = db_get_user_by_id(user_id)
-    if not user or user.get('role') != 'admin':
-        return jsonify({"error": "Unauthorized. Admin access required."}), 403
-
-    from backend.models.access_log import get_all_access_logs
-    logs = get_all_access_logs()
-    return jsonify({"data": logs}), 200
-
 @locker_bp.route('/<int:locker_id>/image/<int:user_id>', methods=['GET'])
 def get_item(user_id, locker_id):
     image_response, status_code = get_locker_image(user_id, locker_id)

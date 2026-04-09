@@ -4,6 +4,7 @@ from backend.models.migrate import run_migrations
 from backend.routes.user_routes import user_bp
 from backend.routes.booking_routes import booking_bp
 from backend.routes.locker_routes import locker_bp
+from backend.routes.log_routes import log_bp
 
 def create_app():
     app = Flask(__name__)
@@ -16,6 +17,7 @@ def create_app():
     app.register_blueprint(user_bp)
     app.register_blueprint(booking_bp)
     app.register_blueprint(locker_bp)
+    app.register_blueprint(log_bp)
 
     return app
 
