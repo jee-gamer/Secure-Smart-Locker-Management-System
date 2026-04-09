@@ -23,13 +23,13 @@ The Smart/Secure Locker Management System (SSLMS) is a web-based application des
 
 ## 4. Architecture Design
 - **Frontend Layer:** Built with Vue 3 (Composition API) and Vite. Manages global state using Pinia-like structures (or simple reactive auth stores), handles routing (Vue Router), and communicates with the backend via Axios.
-- **Backend Layer:** Built with Python and Flask. Uses Blueprints for modular routing (`booking_routes`, `user_routes`, `locker_routes`). 
-- **Controller Layer:** Contains business logic (e.g., verifying locker availability, validating file extensions, managing filesystem operations for uploaded images).
+- **Backend Layer:** Built with Python and Flask. Uses Blueprints for modular routing (`booking_routes`, `user_routes`, `locker_routes`, `log_routes`). 
+- **Controller Layer:** Contains business logic (e.g., verifying locker availability, validating file extensions, managing filesystem operations for uploaded images, handling admin-level operational logging).
 - **Data Access Layer (Model):** Contains pure SQLite queries mapping directly to Python dictionaries.
 - **Database Layer:** A local SQLite database (`locker.db`) storing structured data, coupled with a filesystem `/uploads` directory handling physical item images.
 
 ## 5. Database Design
-The system uses SQLite with three core tables:
+The system uses SQLite with four core tables:
 - **`users`**:
   - `id` (INTEGER PRIMARY KEY)
   - `username` (TEXT, UNIQUE, NOT NULL)
@@ -47,16 +47,24 @@ The system uses SQLite with three core tables:
   - `locker_id` (INTEGER, FOREIGN KEY to lockers)
   - `start_time` (TIMESTAMP)
   - `end_time` (TIMESTAMP - represents checkout when not NULL)
+- **`access_logs`**:
+  - `id` (INTEGER PRIMARY KEY AUTOINCREMENT)
+  - `user_id` (INTEGER, FOREIGN KEY to users)
+  - `locker_id` (INTEGER, FOREIGN KEY to lockers)
+  - `action` (TEXT - records 'opened', 'opened (admin)', or 'unauthorized_attempt')
+  - `timestamp` (TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
 
 ## 6. Role & Permission Structure
 - **User Role (`user`):** Standard users can view lockers, book an available locker for a specific receiver, upload an image of the item, and retrieve (unbook) items from lockers sent to them.
-- **Admin Role (`admin`):** Reserved for administrative privileges (e.g., system management, potential overrides). Currently embedded in the schema but standard interactions map to user-level permissions.
+- **Admin Role (`admin`):** Reserved for administrative privileges. Admins have access to an exclusive Admin Logs View interface (`AdminLogsView.vue`) allowing them to audit full system booking histories and real-time locker logs.
 - **Booking-Level Permissions:** Users can only open or view sensitive image details of lockers where they are either the explicit `sender_id` (`user_id`) or `receiver_id`.
 
 ## 7. Implementation Details
 - **Frontend Framework:** Vue 3 + TailwindCSS.
 - **Backend Framework:** Flask + Flask-CORS. 
-- **Database:** SQLite3 managed via custom Python module mappings instead of an ORM (like SQLAlchemy) for absolute query control.
-- **Upload Management:** Senders upload item photos using `multipart/form-data`. The Flask backend uses Python's `uuid.uuid4()` to generate collision-free filenames and saves the resources locally to an `uploads` folder outside the backend root, maintaining security.
+- **Database:** SQLite3 managed via custom Python module mappings. Built completely decoupled from heavy ORMs for absolute query control.
+- **Timezone Management:** Database timestamps rely strictly on SQLite's `DEFAULT CURRENT_TIMESTAMP` (which natively emits Universal Coordinated Time / UTC). Vue securely parses incoming timestamps with a `'Z'` (Zulu) flag to let the user's localized browser securely convert the absolute time into their unique local time zone.
+- **Upload Management:** Senders upload item photos using `multipart/form-data`. The Flask backend uses Python's `uuid.uuid4()` to generate collision-free filenames and saves the resources locally to an `uploads` folder outside the backend root.
 - **File Deletion:** When a locker is unbooked/emptied, the application securely unlinks (deletes) the corresponding image from the local filesystem to save space and maintain privacy.
-- **Database Migrations & Seeding:** Handled explicitly on application startup (`migrate.py`), ensuring 25 lockers and initial dummy users (`man`, `user1`, `user2`, `stupid`) are always seeded for ease of testing.
+- **Audit Logging System:** Dedicated `log_controller.py` safely evaluates the role of a user requesting data. Locker interaction records are continuously generated to track exactly who accessed/peered inside a locker and to flag intentionally unauthorized endpoint attempts.
+- **Database Migrations & Seeding:** Handled explicitly on application startup (`migrate.py`), ensuring lockers and initial dummy users (including an `admin` account via `seed_initial_users()`) are always seeded for ease of testing.
